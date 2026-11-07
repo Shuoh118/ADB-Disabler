@@ -3,4 +3,4 @@ name=ADB Disabler
 version=1.0.0
 versionCode=10000
 author=Shuoh118
-description=开机禁用 adb / 开发者选项 / OEM 
+description=开机后自动关闭 adb、开发者选项和 OEM 解锁 支持 Magisk / KernelSU / APatch

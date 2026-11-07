@@ -3,11 +3,13 @@
 [简体中文](README.md)
 
 - Works on Magisk / KernelSU / APatch
-- Disables Developer options, USB debugging and OEM unlocking at boot
+- After reboot, Developer Options, USB Debugging, and OEM Unlock will be automatically disabled.
 
 ## Install
 
 Download `ADB-Disabler-1.0.0.zip`, flash it in your manager, reboot.
+
+Can be used with [Auto USB](https://github.com/Shuoh118/Auto-USB)
 
 | Manager | Version |
 |---|---|
