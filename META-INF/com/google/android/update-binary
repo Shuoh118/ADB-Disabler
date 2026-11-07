@@ -1,0 +1,59 @@
+#!/sbin/sh
+# Magisk 20.4+ 走官方 install_module，其余走手动分支
+
+umask 022
+
+OUTFD=$2
+ZIPFILE=$3
+
+ui_print() { echo "$1"; }
+
+if [ -f /data/adb/magisk/util_functions.sh ]; then
+  . /data/adb/magisk/util_functions.sh
+  if [ "${MAGISK_VER_CODE:-0}" -ge 20400 ] 2>/dev/null; then
+    install_module
+    exit 0
+  fi
+  ui_print "! Magisk < 20.4，改走手动安装"
+fi
+
+mount /data 2>/dev/null
+
+[ -f "$ZIPFILE" ] || { ui_print "! 找不到模块包"; exit 1; }
+
+TMP=/dev/tmp/adbdisabler
+rm -rf "$TMP"
+mkdir -p "$TMP" || { ui_print "! 无法创建 $TMP"; exit 1; }
+
+if command -v unzip >/dev/null 2>&1; then
+  unzip -o "$ZIPFILE" -x 'META-INF/*' -d "$TMP" >/dev/null 2>&1
+elif command -v busybox >/dev/null 2>&1; then
+  busybox unzip -o "$ZIPFILE" -x 'META-INF/*' -d "$TMP" >/dev/null 2>&1
+else
+  ui_print "! 没有 unzip 也没有 busybox"
+  exit 1
+fi
+
+[ -f "$TMP/module.prop" ] || { ui_print "! module.prop 缺失"; exit 1; }
+
+MODID=$(sed -n 's/^id=//p' "$TMP/module.prop" | head -n 1 | tr -d '\r ')
+[ -n "$MODID" ] || { ui_print "! module id 缺失"; exit 1; }
+
+MODPATH=/data/adb/modules/$MODID
+rm -rf "$MODPATH"
+mkdir -p "$MODPATH" || { ui_print "! 无法创建 $MODPATH"; exit 1; }
+
+cp -af "$TMP"/. "$MODPATH"/ 2>/dev/null
+
+ui_print "- 模块 : $MODID"
+ui_print "- 路径 : $MODPATH"
+
+export MODPATH
+[ -f "$MODPATH/customize.sh" ] && ( cd "$MODPATH" && sh ./customize.sh )
+
+rm -rf "$TMP"
+
+touch /data/adb/modules_update 2>/dev/null
+
+ui_print "- 完成，重启生效"
+exit 0
