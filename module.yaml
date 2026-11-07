@@ -2,5 +2,5 @@ schemaVersion: 1
 id: adbdisabler
 name: ADB Disabler
 summary: 开机禁用 adb、开发者选项和 OEM 解锁
-description: 开机禁用 adb、开发者选项和 OEM 解锁
+description: README.md
 license: GPL-3.0-or-later
