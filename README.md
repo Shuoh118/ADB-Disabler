@@ -3,7 +3,7 @@
 [English](README_EN.md)
 
 - Magisk / KernelSU / APatch 通用
-- 开机后关掉开发者选项  USB调试和OEM 解锁
+- 开机(重启)后关掉开发者选项  USB调试和OEM 解锁
 
 ## 安装
 
