@@ -3,7 +3,7 @@
 [简体中文](README.md)
 
 - Works on Magisk / KernelSU / APatch
-- Disables Developer options, USB debugging and OEM unlocking at boot
+- After reboot, Developer Options, USB Debugging, and OEM Unlock will be automatically disabled.
 
 ## Install
 
