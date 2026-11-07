@@ -9,6 +9,8 @@
 
 Download `ADB-Disabler-1.0.0.zip`, flash it in your manager, reboot.
 
+Can be used with [Auto USB](https://github.com/Shuoh118/Auto-USB)
+
 | Manager | Version |
 |---|---|
 | Magisk | 20.4+ |
