@@ -20,7 +20,6 @@
 下载 `ADB-Disabler-1.0.0.zip`，在管理器里刷入重启
 
 可与[Auto USB](https://github.com/Shuoh118/Auto-USB)搭配使用
->>>>>>> 0bab6c8e4500b15c9ae2be0d688057d3433d0e9f
 
 | 管理器 | 版本要求 |
 |---|---|
