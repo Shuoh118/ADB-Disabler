@@ -1,21 +1,19 @@
 #!/usr/bin/env python3
-"""Pack the ADB Disabler Magisk/KernelSU/APatch module.
+"""Pack the ADB Disabler module.
 
     python3 build.py
 
-Produces ../dist/ADB-Disabler-<version>.zip, ready to flash. The build
-directory sits outside the source tree so a checkout stays clean and the
-output never ends up in git by accident.
+Writes ../dist/ADB-Disabler-<version>.zip, ready to flash.
 
-Only the Python standard library is used. Nothing outside this directory
-is read; nothing outside the output directory is written.
+The archive mirrors the module exactly: install.sh, service.sh, module.prop,
+module.yaml and META-INF. Repository files (README, LICENSE, build.py itself)
+stay out of the zip so its size matches the original module.
 
-Executable bits are the one thing that actually breaks modules: a
-service.sh packed as 0644 is silently skipped by every manager, and the
-module installs "successfully" while doing nothing. Every file that
-starts with a shebang, plus META-INF/com/google/android/update-binary,
-gets 0755. Everything else gets 0644. The archive is reopened and each
-mode is read back before the script reports success.
+Executable bits matter more than anything else here. A service.sh packed as
+0644 gets skipped by every manager, and the module reports a successful
+install while doing nothing at all. Anything with a shebang, plus
+update-binary, is stored 0755. The zip is reopened afterwards and every mode
+is read back before this script claims success.
 """
 
 from __future__ import annotations
@@ -29,15 +27,26 @@ import zipfile
 SRC = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_OUT = os.path.join(os.path.dirname(SRC), "dist")
 
+# Files that belong to the repository but not to the module image.
+SKIP_FILES = {
+    "build.py", "build.sh", ".gitignore", ".gitattributes",
+    "LICENSE", "NOTICE",
+    "README.md", "README_ZH.md", "README_EN.md",
+    ".DS_Store", "Thumbs.db", "desktop.ini",
+}
 SKIP_DIRS = {".git", ".github", "__pycache__", "out", "dist", ".idea", ".vscode"}
-SKIP_FILES = {".DS_Store", "Thumbs.db", "desktop.ini", ".gitignore"}
 
-ALWAYS_EXEC = {"META-INF/com/google/android/update-binary"}
+# install.sh has no shebang (it is sourced by the manager, not executed),
+# so it needs to be listed explicitly. Original module shipped it 0755.
+ALWAYS_EXEC = {
+    "META-INF/com/google/android/update-binary",
+    "install.sh",
+}
 
 EXEC_BITS = 0o755
 FILE_BITS = 0o644
 
-# Reproducible archives: same input bytes always produce the same zip.
+# Reproducible output: identical inputs produce byte-identical archives.
 ZIP_EPOCH = (1980, 1, 1, 0, 0, 0)
 
 
@@ -66,11 +75,11 @@ def has_shebang(path: str) -> bool:
 
 
 def collect():
-    """Walk SRC and yield (relative_path, absolute_path, mode)."""
+    """Yield (relative_path, absolute_path, mode) for everything going in."""
     for root, dirs, files in os.walk(SRC):
         dirs[:] = sorted(d for d in dirs if d not in SKIP_DIRS)
         for name in sorted(files):
-            if name in SKIP_FILES or name.endswith((".pyc", ".swp", "~")):
+            if name in SKIP_FILES or name.endswith((".pyc", ".swp", ".bak", "~")):
                 continue
             full = os.path.join(root, name)
             rel = os.path.relpath(full, SRC).replace(os.sep, "/")
@@ -111,7 +120,7 @@ def verify(zip_path: str, expected) -> list:
         try:
             corrupt = zf.testzip()
         except zipfile.BadZipFile:
-            corrupt = "archive is not a valid zip"
+            corrupt = "not a valid zip"
         if corrupt:
             bad.append(f"corrupt entry: {corrupt}")
     return bad
@@ -122,9 +131,6 @@ def main() -> int:
     ap.add_argument("-o", "--out", default=DEFAULT_OUT, help="output directory")
     ap.add_argument("--no-verify", action="store_true", help="skip the post-build check")
     args = ap.parse_args()
-
-    if not os.path.isdir(SRC):
-        die(f"source directory missing: {SRC}")
 
     mod_id = read_prop("id")
     version = read_prop("version")
@@ -137,7 +143,7 @@ def main() -> int:
     if not entries:
         die("nothing to pack")
 
-    required = {"module.prop", "customize.sh", "service.sh"}
+    required = {"module.prop", "install.sh", "service.sh"}
     present = {rel for rel, _, _ in entries}
     missing = sorted(required - present)
     if missing:
@@ -146,13 +152,11 @@ def main() -> int:
     out_dir = os.path.abspath(args.out)
     os.makedirs(out_dir, exist_ok=True)
 
-    zip_name = f"ADB-Disabler-{version}.zip"
-    zip_path = os.path.join(out_dir, zip_name)
-
+    zip_path = os.path.join(out_dir, f"ADB-Disabler-{version}.zip")
     count = pack(zip_path, entries)
-    size_kib = os.path.getsize(zip_path) / 1024
 
-    print(f"{zip_name}  {count} files  {size_kib:.1f} KiB")
+    print(f"ADB-Disabler-{version}.zip  {count} files  "
+          f"{os.path.getsize(zip_path) / 1024:.1f} KiB")
     print(f"  {zip_path}")
 
     if args.no_verify:
