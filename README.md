@@ -1,0 +1,33 @@
+## ADB Disabler
+
+[简体中文](README_ZH.md)
+
+- Works on Magisk / KernelSU / APatch
+<<<<<<< HEAD
+- Disables Developer options, USB debugging and OEM unlocking at boot
+
+## Install
+
+Download `ADB-Disabler-1.0.1.zip`, flash it in your manager, reboot.
+
+=======
+- After reboot, Developer Options, USB Debugging, and OEM Unlock will be automatically disabled.
+
+## Install
+
+Download `ADB-Disabler-1.0.0.zip`, flash it in your manager, reboot.
+
+Can be used with [Auto USB](https://github.com/Shuoh118/Auto-USB)
+
+>>>>>>> 0bab6c8e4500b15c9ae2be0d688057d3433d0e9f
+| Manager | Version |
+|---|---|
+| Magisk | 20.4+ |
+| KernelSU | 0.9.0+ |
+| APatch | 10.7+ |
+
+## Build
+
+```sh
+python3 build.py
+```
