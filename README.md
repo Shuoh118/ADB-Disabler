@@ -1,13 +1,13 @@
 ## ADB Disabler
 
-[简体中文](README_ZH.md)
+[简体中文](README_zh.md)
 
 - Works on Magisk / KernelSU / APatch
 - Disables Developer options, USB debugging and OEM unlocking at boot
 
 ## Install
 
-Download `ADB-Disabler-1.0.1.zip`, flash it in your manager, reboot.
+Download `ADB-Disabler-1.0.2.zip`, flash it in your manager, reboot.
 
 | Manager | Version |
 |---|---|
