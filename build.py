@@ -31,7 +31,7 @@ DEFAULT_OUT = os.path.join(os.path.dirname(SRC), "dist")
 SKIP_FILES = {
     "build.py", "build.sh", ".gitignore", ".gitattributes",
     "LICENSE", "NOTICE",
-    "README.md", "README_ZH.md", "README_EN.md",
+    "README.md", "README_zh.md", "README_EN.md",
     ".DS_Store", "Thumbs.db", "desktop.ini",
 }
 SKIP_DIRS = {".git", ".github", "__pycache__", "out", "dist", ".idea", ".vscode"}

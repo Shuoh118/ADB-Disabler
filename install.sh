@@ -6,8 +6,7 @@ PROPFILE=false
 print_modname() {
   ui_print "*******************************"
   ui_print "  USB/OEM/开发者模式 禁用器"
-  ui_print "                                                 "
-  ui_print "你有时间去试错 也有时间去止损 但不应该拿时间去后悔"
+  ui_print "我的性格 注定会让我失去很多东西"
   ui_print "*******************************"
 }
 

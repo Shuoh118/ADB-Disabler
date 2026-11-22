@@ -1,6 +1,8 @@
 id=adbdisabler
 name=ADB Disabler
-version=1.0.1
-versionCode=10001
+version=1.0.2
+versionCode=10002
 author=Shuoh118
-description=开机禁用 adb、开发者选项和 OEM 解锁
+description=Blocks adb,dev options,OEM unlock at boot
+webuiIcon=icon.png
+actionIcon=icon.png
