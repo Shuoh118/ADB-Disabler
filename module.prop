@@ -1,7 +1,7 @@
 id=adbdisabler
 name=ADB Disabler
-version=1.0.2
-versionCode=10002
+version=1.0.3
+versionCode=10003
 author=Shuoh118
 description=Blocks adb,dev options,OEM unlock at boot
 webuiIcon=icon.png

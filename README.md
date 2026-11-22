@@ -7,7 +7,7 @@
 
 ## Install
 
-Download `ADB-Disabler-1.0.2.zip`, flash it in your manager, reboot.
+Download `ADB-Disabler-1.0.3.zip`, flash it in your manager, reboot.
 
 | Manager | Version |
 |---|---|
