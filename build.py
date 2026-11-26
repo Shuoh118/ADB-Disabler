@@ -34,7 +34,8 @@ SKIP_FILES = {
     "README.md", "README_zh.md", "README_EN.md",
     ".DS_Store", "Thumbs.db", "desktop.ini",
 }
-SKIP_DIRS = {".git", ".github", "__pycache__", "out", "dist", ".idea", ".vscode"}
+SKIP_DIRS = {".git", ".github", "__pycache__", "out", "dist", ".idea", ".vscode",
+             "webui", "node_modules", ".vite"}
 
 # install.sh has no shebang (it is sourced by the manager, not executed),
 # so it needs to be listed explicitly. Original module shipped it 0755.
@@ -95,7 +96,12 @@ def pack(zip_path: str, entries) -> int:
             info.external_attr = (stat.S_IFREG | mode) << 16
             info.compress_type = zipfile.ZIP_DEFLATED
             with open(full, "rb") as fh:
-                zf.writestr(info, fh.read())
+                data = fh.read()
+            # Shell scripts must be LF-only inside the module, whatever the
+            # checkout's line-ending configuration is on Windows.
+            if rel.endswith(".sh") or rel in ALWAYS_EXEC:
+                data = data.replace(b"\r\n", b"\n")
+            zf.writestr(info, data)
             count += 1
     return count
 
@@ -143,7 +149,7 @@ def main() -> int:
     if not entries:
         die("nothing to pack")
 
-    required = {"module.prop", "install.sh", "service.sh"}
+    required = {"module.prop", "install.sh", "service.sh", "webroot/index.html"}
     present = {rel for rel, _, _ in entries}
     missing = sorted(required - present)
     if missing:
